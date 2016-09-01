@@ -31,7 +31,10 @@ from logging import StreamHandler, getLogger, INFO, Formatter
 from sys import stdout
 
 from topology_docker.node import DockerNode
-from topology_docker.shell import DockerShell, DockerBashShell
+from topology_docker.shell import DockerBashShell
+
+from .shell import OpenSwitchVtyshShell
+
 
 # When a failure happens during boot time, logs and other information is
 # collected to help with the debugging. The path of this collection is to be
@@ -384,17 +387,16 @@ class OpenSwitchNode(DockerNode):
 
         # FIXME: Remove this attribute to merge with version > 1.6.0
         self.shared_dir_mount = '/tmp'
+        initial_prompt = '(^|\n).*[#$] '
 
         # Add vtysh (default) shell
         # FIXME: Create a subclass to handle better the particularities of
         # vtysh, like prompt setup etc.
-        self._shells['vtysh'] = DockerShell(
-            self.container_id, 'vtysh', '(^|\n)switch(\([\-a-zA-Z0-9]*\))?#'
+        self._shells['vtysh'] = OpenSwitchVtyshShell(
+            self.container_id, 'bash', initial_prompt=initial_prompt
         )
 
         # Add bash shells
-        initial_prompt = '(^|\n).*[#$] '
-
         self._shells['bash'] = DockerBashShell(
             self.container_id, 'bash',
             initial_prompt=initial_prompt

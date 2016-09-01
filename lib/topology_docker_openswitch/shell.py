@@ -33,6 +33,7 @@ from re import match, search
 class OpenSwitchVtyshShell(DockerBashShell):
     """
     OpenSwitch vtysh shell
+
     :param str container_id: identifier of the container that holds this shell
     """
 
@@ -70,11 +71,11 @@ class OpenSwitchVtyshShell(DockerBashShell):
 
     def send_command(
         self, command, matches=None, newline=True, timeout=None,
-        connection=None
+        connection=None, silent=False
     ):
         match_index = super(OpenSwitchVtyshShell, self).send_command(
             command, matches=matches, newline=newline, timeout=timeout,
-            connection=connection
+            connection=connection, silent=silent
         )
 
         spawn = self._get_connection(connection)
